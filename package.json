@@ -1,0 +1,33 @@
+{
+  "name": "addons",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "production": "mix --production"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "js-cookie": "^2.2.1",
+    "laravel-mix": "6.0",
+    "path": "^0.12.7",
+    "pluralize": "^8.0.0",
+    "sass": "^1.56.2",
+    "underscore": "^1.11.0",
+    "vue": "^2.7.14",
+    "vue-head": "^2.2.0",
+    "vue-loader": "^15.10.1",
+    "vue-set-value": "^1.0.3",
+    "vuex": "^3.6.2",
+    "webpack": "^5.75.0"
+  },
+  "devDependencies": {
+    "vue-template-compiler": "^2.7.14"
+  }
+}

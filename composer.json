@@ -1,0 +1,35 @@
+{
+    "name": "antweb/fusioncms-image",
+    "description": "A FusionCMS addon.",
+    "keywords": [
+        "laravel",
+        "fusioncms"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.3|^8.0"
+    },
+    "autoload": {
+        "classmap": [
+            "database/"
+        ],
+        "psr-4": {
+            "Addons\\Image\\": "src/"
+        }
+    },
+    "extra": {
+        "fusioncms": {
+            "name": "Image"
+        },
+        "laravel": {
+            "providers": [
+                "Addons\\Image\\Providers\\AddonServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
