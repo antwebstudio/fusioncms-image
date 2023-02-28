@@ -47,10 +47,75 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
         // fieldtypes()->register(\Addons\Image\Fieldtypes\ImageFieldtype::class);
 
         $this->registerFileModel();
+        $this->registerCachePath();
+
+        if (!File::exists(public_path("thumbnail")) && File::isDirectory(storage_path("app/_cache"))) {
+            // Create symlink
+            File::link(
+                storage_path("app/_cache"),
+                public_path("files")
+            );
+        }
+
+        if (!File::exists(public_path("thumbnail")) && File::isDirectory(storage_path("app/_cache/thumbnail"))) {
+            // Create symlink
+            File::link(
+                storage_path("app/_cache/thumbnail"),
+                public_path("thumbnail")
+            );
+        }
     }
 
     protected function registerFileModel()
     {
         $this->app->bind(\Fusion\Models\File::class, \Addons\Image\Models\File::class);
+    }
+
+    protected function registerCachePath()
+    {
+        $this->app->bind('glide', function($path, $params) {
+            $request    = app('request');
+            $filesystem = app('filesystem')->getDriver();
+      
+            return \League\Glide\ServerFactory::create([
+                'response'          => new \League\Glide\Responses\LaravelResponseFactory($request),
+                'source'            => $filesystem,
+                'watermarks'        => $filesystem,
+                'cache'             => app('filesystem')->disk('local')->getDriver(),
+                'cache_path_prefix' => '.cache',
+                'cache_path_callable' => function($path, $params) {
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $extLength = strlen($ext);
+                    if (substr($path, - $extLength) == $ext) {
+                        $subPath = substr($path, 0, - $extLength - 1);
+                    }
+      
+                    $suffix = '';
+                    if (isset($params['w'])) {
+                        $suffix .= $params['w'];
+                    }
+                    if (isset($params['h'])) {
+                        $suffix .= 'x'.$params['h'];
+                    }
+                    if (isset($params['fit'])) {
+                        $suffix .= '_'.$params['fit'];
+                    }
+      
+                    if (trim($suffix) != '') {
+                        $prefix = '_cache/thumbnail';
+                        $suffix .= '/';
+                    } else {
+                        $prefix = '_cache';
+                    }
+      
+                    $pattern = '(.*)\/files\/([a-zA-Z0-9u]+)-(.*)\.(?:jpe?g|gif|png)$';
+                    $pattern = 'files/([a-zA-Z0-9u]+)-(.*)';
+                    preg_match('#'.$pattern.'#', $subPath, $match);
+                    $cachePath = $prefix.'/'.$match[1].'/'.$match[2].'/'.$suffix;
+                    
+                    return $cachePath;
+                }
+            ]);
+        });
     }
 }
