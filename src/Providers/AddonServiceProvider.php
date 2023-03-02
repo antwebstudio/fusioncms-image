@@ -5,6 +5,7 @@ namespace Addons\Image\Providers;
 use Fusion;
 use Fusion\Facades\Menu;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
@@ -73,9 +74,10 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
 
     protected function registerCachePath()
     {
-        $this->app->bind('glide', function($path, $params) {
+        $this->app->bind('glide', function($app, $params) {
+            
             $request    = app('request');
-            $filesystem = app('filesystem')->getDriver();
+            $filesystem = Storage::disk($params['disk'])->getDriver();
       
             return \League\Glide\ServerFactory::create([
                 'response'          => new \League\Glide\Responses\LaravelResponseFactory($request),
