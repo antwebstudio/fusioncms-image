@@ -49,7 +49,7 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
         $this->registerFileModel();
         $this->registerCachePath();
 
-        if (!File::exists(public_path("thumbnail")) && File::isDirectory(storage_path("app/_cache"))) {
+        if (!File::exists(public_path("files")) && File::isDirectory(storage_path("app/_cache"))) {
             // Create symlink
             File::link(
                 storage_path("app/_cache"),
