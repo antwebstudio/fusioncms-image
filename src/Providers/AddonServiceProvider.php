@@ -50,11 +50,11 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
         $this->registerFileModel();
         $this->registerCachePath();
 
-        if (!File::exists(public_path("files")) && File::isDirectory(storage_path("app/_cache"))) {
+        if (!File::exists(public_path("file")) && File::isDirectory(storage_path("app/_cache"))) {
             // Create symlink
             File::link(
                 storage_path("app/_cache"),
-                public_path("files")
+                public_path("file")
             );
         }
 
@@ -91,6 +91,7 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
                     if (substr($path, - $extLength) == $ext) {
                         $subPath = substr($path, 0, - $extLength - 1);
                     }
+                    $subPath = $path;
       
                     $suffix = '';
                     if (isset($params['w'])) {
@@ -105,7 +106,7 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
       
                     if (trim($suffix) != '') {
                         $prefix = '_cache/thumbnail';
-                        $suffix .= '/';
+                        $suffix = '/'.$suffix;
                     } else {
                         $prefix = '_cache';
                     }
@@ -113,7 +114,7 @@ class AddonServiceProvider extends \Fusion\Providers\AddonServiceProvider
                     $pattern = '(.*)\/files\/([a-zA-Z0-9u]+)-(.*)\.(?:jpe?g|gif|png)$';
                     $pattern = 'files/([a-zA-Z0-9u]+)-(.*)';
                     preg_match('#'.$pattern.'#', $subPath, $match);
-                    $cachePath = $prefix.'/'.$match[1].'/'.$match[2].'/'.$suffix;
+                    $cachePath = $prefix.'/'.$match[1].'/'.$match[2].$suffix;
                     
                     return $cachePath;
                 }
